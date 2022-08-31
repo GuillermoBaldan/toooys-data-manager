@@ -18,4 +18,4 @@ const BasicSchema = new Schema({
     type: String,
   },
 });
-module.exports = mongoose.model("Note", NoteSchema);
+module.exports = mongoose.model("BasicShema", BasicSchema);
