@@ -1,22 +1,23 @@
 {
-    "name": "toooys-data-manager",
-    "version": "1.0.0",
-    "description": "toooys system data manager",
-    "main": "index.js",
-    "scripts": {
-      "test": "test"
-    },
-    "keywords": [
-      "toooys",
-      "unified-data-system",
-      "semantic-data"
-    ],
-    "author": "Guillermo Baldán López",
-    "license": "SEE LICENSE IN LICENSE",
-    "dependencies": {
-      "bcryptjs": "^2.4.3",
-      "connect-flash": "^0.1.1",
-      "nodemon": "^2.0.19"
-    }
+  "name": "toooys-data-manager",
+  "version": "1.0.0",
+  "description": "toooys system data manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "dev": "nodemon backend/index.js"
+  },
+  "keywords": [
+    "toooys",
+    "unified-data-system",
+    "semantic-data"
+  ],
+  "author": "Guillermo Baldán López",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19"
   }
-  
+}
