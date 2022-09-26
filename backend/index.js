@@ -49,16 +49,15 @@ app.use((req, res, next) => {
 });
 //Routes
 app.use(require("./routes/index"));
-app.use(require("./routes/notes"));
+app.use(require("./routes/data"));
 app.use(require("./routes/users"));
 
 //Static Files
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 //Server is listenning
 app.listen(app.get("port"), () => {
   console.log("Server on port", app.get("port"));
 });
 
-/* Código final
-https://github.com/FaztTech/nodejs-notes-app */
+
