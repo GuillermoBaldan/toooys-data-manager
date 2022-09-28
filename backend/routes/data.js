@@ -1,59 +1,78 @@
 const router = require("express").Router();
+const mongoose = require("mongoose")
 
-const Note = require("../models/Note");
+const Data = require("../models/Basic");
 const { isAuthenticated } = require("../helpers/auth");
 
-router.get("/notes/add", isAuthenticated, (req, res) => {
-  res.render("notes/new-notes");
+router.get("/data/add", isAuthenticated, (req, res) => {
+    console.log("se hace render de data/new-data desde GET")
+  res.render("data/new-data");
 });
 
-router.post("/notes/new-note", isAuthenticated, async (req, res) => {
-  const { title, description } = req.body;
+router.post("/data/new-single-data", isAuthenticated, async (req, res) => {
+  //const { title, description } = req.body;
+  const { semanticValue } = req.body
   const errors = [];
-  if (!title) {
-    errors.push({ text: "Please Write a title" });
+  
+  if (!semanticValue) {
+    errors.push({ text: "Please write a semantic value" });
+    console.log("Se hace errors.push")
   }
+  /*
   if (!description) {
     errors.push({ text: "Please Write a description" });
-  }
+  }*/
   if (errors.length > 0) {
-    res.render("notes/new-notes", {
+    console.log("se hace render de data/new-data desde POST")
+    console.log(`errors.length: ${errors.length}`)
+    res.render("data/new-data", {
       errors,
-      title,
-      description,
+      semanticValue,
     });
   } else {
-    const newNote = new Note({ title, description });
-    newNote.user = req.user._id;
-    await newNote.save();
-    req.flash("success_msg", "Note Added Successfully");
-    res.redirect("/notes");
+    const newData = new Data({ semanticValue });
+    newData.user = req.user._id;
+    await newData.save();
+    req.flash("success_msg", "Data Added Successfully");
+    res.redirect("/data");
   }
 });
 
-router.get("/notes", isAuthenticated, async (req, res) => {
-  const notes = await Note.find({ user: req.user._id })
+router.get("/data", isAuthenticated, async (req, res) => {
+  const data = await Data.find({ user: req.user._id })
     .sort({ date: "desc" })
     .lean();
-  res.render("notes/all-notes", { notes });
+  res.render("data/all-data", { data });
 });
 
-router.get("/notes/edit/:id", isAuthenticated, async (req, res) => {
-  const note = await Note.findById(req.params.id).lean();
-  res.render("notes/edit-note", { note });
+router.get("/data/edit/:id", isAuthenticated, async (req, res) => {
+  const data = await Data.findById(req.params.id).lean();
+  res.render("data/edit-data", { data });
 });
 
-router.put("/notes/edit-note/:id", isAuthenticated, async (req, res) => {
-  const { title, description } = req.body;
-  await Note.findByIdAndUpdate(req.params.id, { title, description });
-  req.flash("success_msg", "Note Updated Successfully");
-  res.redirect("/notes");
+router.put("/data/edit/:id", isAuthenticated, async (req, res) => {
+    const errors = [];
+    const data = await Data.findById(req.params.id).lean();
+    const { dataApp,semanticValue } = req.body;
+  if( !mongoose.Types.ObjectId.isValid(dataApp) ){
+    //Si no es valido escribimos un mensaje de error
+    errors.push({ text: "Please write a moongo valid Object Id value" });
+    res.render("data/edit-data", {
+       data,errors
+    });
+    }else{
+    //Si es valido lo guardamos
+  await Data.findByIdAndUpdate(req.params.id, { dataApp, semanticValue });
+  req.flash("success_msg", "Data Updated Successfully");
+  res.redirect("/data");
+  }
+  
 });
 
-router.delete("/notes/delete/:id", isAuthenticated, async (req, res) => {
-  await Note.findByIdAndDelete(req.params.id);
-  req.flash("success_msg", "Note Deleted Successfully");
-  res.redirect("/notes");
+router.delete("/data/delete/:id", isAuthenticated, async (req, res) => {
+  await Data.findByIdAndDelete(req.params.id);
+  req.flash("success_msg", "Data Deleted Successfully");
+  res.redirect("/data");
 });
 
 module.exports = router;
