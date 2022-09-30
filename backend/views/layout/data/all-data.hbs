@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-  {{#each notes}}
+  {{#each data}}
     <div class="col-md-3">
       <div class="card">
         <div class="card-body">
@@ -7,12 +7,12 @@
             class="card-title d-flex justify-content-between align-items-center"
           >
             {{title}}
-            <a href="/notes/edit/{{_id}}"><i class="fas fa-edit"></i></a>
+            <a href="/data/edit/{{_id}}"><i class="fas fa-edit"></i></a>
           </h4>
           <p>
             {{description}}
           </p>
-          <form action="/notes/delete/{{_id}}?_method=DELETE" method="POST">
+          <form action="/data/delete/{{_id}}?_method=DELETE" method="POST">
             <input type="hidden" name="_method" value="DELETE" />
             <button
               class="btn btn-danger btn-block btn-sm"
@@ -28,8 +28,8 @@
       <div class="card mx-auto">
         <div class="card-body">
           <h1>Hello {{user.name}}</h1>
-          <p class="lead">There are not notes yet.</p>
-          <a href="/notes/add" class="btn btn-success btn-block">Create One!</a>
+          <p class="lead">There are not data yet.</p>
+          <a href="/data/add" class="btn btn-success btn-block">Add one piece of data!</a>
         </div>
       </div>
     </div>
