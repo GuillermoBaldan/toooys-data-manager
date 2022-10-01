@@ -1,36 +1,29 @@
 const router = require("express").Router();
-const mongoose = require("mongoose")
 
 const Data = require("../models/Basic");
 const { isAuthenticated } = require("../helpers/auth");
 
 router.get("/data/add", isAuthenticated, (req, res) => {
-    console.log("se hace render de data/new-data desde GET")
   res.render("data/new-data");
 });
 
-router.post("/data/new-single-data", isAuthenticated, async (req, res) => {
-  //const { title, description } = req.body;
-  const { semanticValue } = req.body
+router.post("/data/new-Data", isAuthenticated, async (req, res) => {
+  const { title, description } = req.body;
   const errors = [];
-  
-  if (!semanticValue) {
-    errors.push({ text: "Please write a semantic value" });
-    console.log("Se hace errors.push")
+  if (!title) {
+    errors.push({ text: "Please Write a title" });
   }
-  /*
   if (!description) {
     errors.push({ text: "Please Write a description" });
-  }*/
+  }
   if (errors.length > 0) {
-    console.log("se hace render de data/new-data desde POST")
-    console.log(`errors.length: ${errors.length}`)
     res.render("data/new-data", {
       errors,
-      semanticValue,
+      title,
+      description,
     });
   } else {
-    const newData = new Data({ semanticValue });
+    const newData = new Data({ title, description });
     newData.user = req.user._id;
     await newData.save();
     req.flash("success_msg", "Data Added Successfully");
@@ -39,34 +32,22 @@ router.post("/data/new-single-data", isAuthenticated, async (req, res) => {
 });
 
 router.get("/data", isAuthenticated, async (req, res) => {
-  const data = await Data.find({ user: req.user._id })
+  const Datas = await Data.find({ user: req.user._id })
     .sort({ date: "desc" })
     .lean();
-  res.render("data/all-data", { data });
+  res.render("data/all-data", { Datas });
 });
 
 router.get("/data/edit/:id", isAuthenticated, async (req, res) => {
-  const data = await Data.findById(req.params.id).lean();
-  res.render("data/edit-data", { data });
+  const Data = await Data.findById(req.params.id).lean();
+  res.render("data/edit", { Data });
 });
 
 router.put("/data/edit/:id", isAuthenticated, async (req, res) => {
-    const errors = [];
-    const data = await Data.findById(req.params.id).lean();
-    const { dataApp,semanticValue } = req.body;
-  if( !mongoose.Types.ObjectId.isValid(dataApp) ){
-    //Si no es valido escribimos un mensaje de error
-    errors.push({ text: "Please write a moongo valid Object Id value" });
-    res.render("data/edit-data", {
-       data,errors
-    });
-    }else{
-    //Si es valido lo guardamos
-  await Data.findByIdAndUpdate(req.params.id, { dataApp, semanticValue });
+  const { title, description } = req.body;
+  await Data.findByIdAndUpdate(req.params.id, { title, description });
   req.flash("success_msg", "Data Updated Successfully");
   res.redirect("/data");
-  }
-  
 });
 
 router.delete("/data/delete/:id", isAuthenticated, async (req, res) => {
