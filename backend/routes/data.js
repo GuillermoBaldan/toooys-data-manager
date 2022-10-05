@@ -32,7 +32,7 @@ router.post("/data/new-Data", isAuthenticated, async (req, res) => {
 });
 
 router.get("/data", isAuthenticated, async (req, res) => {
-  const Data = await Data.find({ user: req.user._id })
+  const data = await Data.find({ user: req.user._id })
     .sort({ date: "desc" })
     .lean();
   res.render("data/all-data", { Data });
