@@ -4,26 +4,32 @@ const Data = require("../models/Basic");
 const { isAuthenticated } = require("../helpers/auth");
 
 router.get("/data/add", isAuthenticated, (req, res) => {
+    console.log("se hace render de data/new-data desde GET")
   res.render("data/new-data");
 });
 
-router.post("/data/new-Data", isAuthenticated, async (req, res) => {
-  const { title, description } = req.body;
+router.post("/data/new-single-data", isAuthenticated, async (req, res) => {
+  //const { title, description } = req.body;
+  const { semanticValue } = req.body
   const errors = [];
-  if (!title) {
-    errors.push({ text: "Please Write a title" });
+  
+  if (!semanticValue) {
+    errors.push({ text: "Please write a semantic value" });
+    console.log("Se hace errors.push")
   }
+  /*
   if (!description) {
     errors.push({ text: "Please Write a description" });
-  }
+  }*/
   if (errors.length > 0) {
+    console.log("se hace render de data/new-data desde POST")
+    console.log(`errors.length: ${errors.length}`)
     res.render("data/new-data", {
       errors,
-      title,
-      description,
+      semanticValue,
     });
   } else {
-    const newData = new Data({ title, description });
+    const newData = new Data({ semanticValue });
     newData.user = req.user._id;
     await newData.save();
     req.flash("success_msg", "Data Added Successfully");
@@ -35,7 +41,7 @@ router.get("/data", isAuthenticated, async (req, res) => {
   const data = await Data.find({ user: req.user._id })
     .sort({ date: "desc" })
     .lean();
-  res.render("data/all-data", { Data });
+  res.render("data/all-data", { data });
 });
 
 router.get("/data/edit/:id", isAuthenticated, async (req, res) => {
